@@ -14,6 +14,18 @@ IMG_SIZE = 100
 MARZOCCO_TYPES = ["random", "fb80", "gb5", "leva", "linea", "strada"]
 MARZOCCO_LABEL = [0, 1.0, 2.0, 3.0, 4.0, 5.0]
 
+'''
+_dir_ = os.path.join(DATADIR, "images/train/random")
+pic_path = os.path.join(_dir_, os.listdir(_dir_)[0])
+img_array = cv2.imread(pic_path, cv2.IMREAD_GRAYSCALE)
+new_array = cv2.resize(img_array, (IMG_SIZE, IMG_SIZE))
+print(img_array)
+print(len(img_array))
+print(len(img_array[0]))
+print(new_array)
+print(len(new_array))
+print(len(new_array[0]))
+'''
 
 def create_training_data():
     training_data = []

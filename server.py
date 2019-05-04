@@ -6,7 +6,8 @@ app = Flask(__name__)
 @app.route('/', methods=['POST'])
 def hello_world():
     if request.method == 'POST':
-        buffer = request.json.get("data")
+        content = request.get_json(silent=True)
+        buffer = content['data']
         print("Lenght of Buffer: " + str(len(buffer)))
         
         json_res = {"marzocco_probability": 0.8}
