@@ -32,22 +32,6 @@ def create_testing_data():
 
     return testing_data
 
-def create_predict_photo():
-    x = []
-    new_path = os.path.join(os.getcwd(), "server_image/photo.jpg")
-    #for i in [1, 2]:
-    try:
-        img_array = cv2.imread(new_path, cv2.IMREAD_GRAYSCALE)
-        new_array = cv2.resize(img_array, (IMG_SIZE, IMG_SIZE))
-        x.append([new_array])
-    except Exception as e:
-        pass
-
-    return x
-
-x = create_predict_photo()
-x = np.array(x).reshape(-1, IMG_SIZE, IMG_SIZE, 1)
-
 training_data = create_testing_data()
 random.shuffle(training_data)
 
@@ -64,21 +48,11 @@ model = keras.models.load_model(os.path.join(
     DATADIR, "model_marzocco_detector.h5"))
 test_datagen = keras.preprocessing.image.ImageDataGenerator(rescale=1./255)
 
-# 0. Prepare Batch
-'''
-for batch in test_datagen.flow(x, batch_size=1):
-    pred = model.predict(batch)
-    print(pred)
-'''
-pred = model.predict(test_datagen.flow(x, batch_size=1)[0])
-print(pred[0][0])
 
-'''
 # 1. Test Individual Images
-predictions = model.predict_proba(marzocco_images)
+predictions = model.predict_proba(X)
 print("Individual Prediction: ", predictions[0])
 
 # 2. Evaluate Accuracy
-test_loss, test_acc = model.evaluate(marzocco_images, marzocco_labels)
+test_loss, test_acc = model.evaluate(X, y)
 print("Test accuracy:", test_acc)
-'''
