@@ -3,3 +3,4 @@ flask
 tensorflow
 numpy
 SciPy
+cv2

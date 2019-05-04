@@ -7,7 +7,7 @@ import numpy as np
 import zipfile
 import sys
 
-sys.path.append('/usr/local/lib/python3.7/site-packages')
+#sys.path.append('/usr/local/lib/python3.7/site-packages')
 import cv2
 
 PHOTODIR = os.path.join(os.getcwd(), "server_image/photo.jpg")
