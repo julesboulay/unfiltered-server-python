@@ -3,4 +3,5 @@ flask
 tensorflow
 numpy
 SciPy
-cv2
+
+opencv-python-headless
