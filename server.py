@@ -60,6 +60,12 @@ def poredict_image():
                 json_res = {"message": "failure", "error": "Error loading image into array"}
                 return Response(json.dumps(json_res), mimetype='application/json')
 
+        # #. Delete Image File
+        try:
+                os.remove(photo_path)
+        except Exception as e:
+                pass
+
         # 4. Magic
         pred = 0
         try:

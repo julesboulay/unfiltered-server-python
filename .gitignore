@@ -5,6 +5,7 @@ marzocco_detector/model_marzocco_detector.h5
 marzocco_detector/images_data/
 lib/
 model_marzocco_detector.h5
+server_image/*.jpg
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
