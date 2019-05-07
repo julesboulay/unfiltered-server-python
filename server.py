@@ -8,8 +8,11 @@ import zipfile
 import sys
 import random
 
-if os.environ['USER'] == "julesboulaydetouchet":
+try:
         sys.path.append('/usr/local/lib/python3.7/site-packages')
+except Exception as e:
+        pass
+
 import cv2
 
 PHOTODIR = os.path.join(os.getcwd(), "server_image")
