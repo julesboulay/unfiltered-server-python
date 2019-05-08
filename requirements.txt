@@ -5,3 +5,5 @@ numpy
 SciPy
 
 opencv-python-headless
+
+google_images_download
