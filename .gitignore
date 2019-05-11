@@ -1,11 +1,12 @@
 # Custom Mine
-marzocco_detector/images/test/
-marzocco_detector/images/train/
-marzocco_detector/model_marzocco_detector.h5
-marzocco_detector/images_data/
+src/marzocco_detector/images/test/
+src/marzocco_detector/images/train/
+src/marzocco_detector/model_marzocco_detector.h5
+src/marzocco_detector/images_data/
 lib/
-model_marzocco_detector.h5
-server_image/*.jpg
+src/server/model_marzocco_detector.h5
+src/server/server_images/*.jpg
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
