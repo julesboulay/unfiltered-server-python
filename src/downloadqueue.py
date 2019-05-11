@@ -14,6 +14,7 @@ DOWNLD_DIR = os.path.join(os.getcwd(), "src/server/server_images/download")
 MODEL__DIR = os.path.join(os.getcwd(), "src/server/model_marzocco_detector.h5")
 
 # Run Time Configurations
+NODE_SERVER = "https://unfiltered-node-typescript.herokuapp.com/"+"predictions"
 IMG_SIZE = 100
 HIT_VAL = .01
 NUMBER_OF_IMAGE_DOWNLOADS = 20
@@ -103,7 +104,7 @@ class DownloadQueue(Thread):
 
     def __sendPredictions(self, hits):
         body = {"message": "success", "predictions": hits}
-        res = requests.post('http://localhost:3000/predictions', json=body)
+        res = requests.post(NODE_SERVER, json=body)
         if res.status_code != 200:
             try:
                 raise Exception(res.json()['error'])
