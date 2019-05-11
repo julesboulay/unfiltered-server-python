@@ -1,9 +1,19 @@
 import os
 import json
+import zipfile
+from tensorflow import keras
 from flask import Flask, request, jsonify, Response
-from src.server.downloadQueue import DownloadQueue
-from src.server.imagePredictor import ImagePredictor
+from src.downloadqueue import DownloadQueue
+from src.imagepredictor import ImagePredictor
 
+# Directory Paths
+SEARCH_DIR = os.path.join(os.getcwd(), "src/server/server_images/search")
+MODEL__DIR = os.path.join(os.getcwd(), "src/server/model_marzocco_detector.h5")
+
+# SetUp the Model
+zip_ref = zipfile.ZipFile("src/server/model_marzocco_detector.h5.zip", 'r')
+zip_ref.extractall(os.getcwd())
+zip_ref.close()
 
 # Start the Queue Thread
 imgPred = ImagePredictor()
@@ -28,12 +38,19 @@ def predict_image():
             json_res = {"message": "failure", "error": "Missing JSON data"}
             return Response(json.dumps(json_res), mimetype='application/json')
 
+        # SetUp the Model
+        model = keras.models.load_model(MODEL__DIR)
+        model._make_predict_function()
+
         # Calculate Marzocco Probability
         pred = 0
         try:
-            pred = imgPred.predictImage(photo_reference, buffer)
+            img_path = os.path.join(SEARCH_DIR, photo_reference)
+            imgPred.saveImage(img_path, buffer)
+            pred = imgPred.predictImage(img_path, model)
+            imgPred.deleteImage(img_path)
         except Exception as e:
-            json_res = {"message": "failure", "error": "Missing JSON data"}
+            json_res = {"message": "failure", "error": str(e)}
             return Response(json.dumps(json_res), mimetype='application/json')
 
         # Send Response Probability
@@ -44,28 +61,27 @@ def predict_image():
 @app.route('/predictdownload', methods=['POST'])
 def predict_download():
     if request.method == 'POST':
+
         # Get JSON Data from Request
-        place_id = ""
-        place_name = ""
-        place_suffix = ""
+        places = []
         try:
             content = request.get_json(silent=True)
-            place_id = content['place_id']
-            place_name = content['place_name']
-            place_suffix = content['place_suffix']
+            places = content['places']
         except Exception as e:
             json_res = {"message": "failure", "error": "Missing JSON data"}
             return Response(json.dumps(json_res), mimetype='application/json')
 
-        # Check If Data Valid
-        if not place_id or not place_name or not place_suffix:
+        # Add To Queue And Send Response
+        try:
+            for p in places:
+                dwlQueue.addToQueue(
+                    p['place_id'], p['place_name'], p['place_suffix'])
+        except Exception as e:
             json_res = {"message": "failure", "error": "Missing JSON data"}
-            return Response(json.dumps({"message": "success"}), mimetype='application/json')
-        else:
-            # Add To Queue And Send Response
-            dwlQueue.addToQueue(place_id, place_name, place_suffix)
-            json_res = {"message": "success"}
             return Response(json.dumps(json_res), mimetype='application/json')
+
+        json_res = {"message": "success"}
+        return Response(json.dumps(json_res), mimetype='application/json')
 
 
 @app.route('/predictmock', methods=['POST'])
