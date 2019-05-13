@@ -2,14 +2,12 @@ import os
 import json
 import zipfile
 import random
-from tensorflow import keras
 from flask import Flask, request, jsonify, Response
 from src.downloadqueue import DownloadQueue
 from src.imagepredictor import ImagePredictor
 
 # Directory Paths
 SEARCH_DIR = os.path.join(os.getcwd(), "src/server/server_images/search")
-MODEL__DIR = os.path.join(os.getcwd(), "src/server/model_marzocco_detector.h5")
 
 # SetUp the Model
 zip_ref = zipfile.ZipFile("src/server/model_marzocco_detector.h5.zip", 'r')
@@ -39,16 +37,12 @@ def predict_image():
             json_res = {"message": "failure", "error": "Missing JSON data"}
             return Response(json.dumps(json_res), mimetype='application/json')
 
-        # SetUp the Model
-        model = keras.models.load_model(MODEL__DIR)
-        model._make_predict_function()
-
         # Calculate Marzocco Probability
         pred = 0
         try:
-            img_path = os.path.join(SEARCH_DIR, photo_reference)
+            img_path = os.path.join(SEARCH_DIR, photo_reference + ".jpg")
             imgPred.saveImage(img_path, buffer)
-            pred = imgPred.predictImage(img_path, model)
+            pred = imgPred.predictImage(img_path)
             imgPred.deleteImage(img_path)
         except Exception as e:
             json_res = {"message": "failure", "error": str(e)}
@@ -94,4 +88,4 @@ def predict_mock():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(threaded=True)
